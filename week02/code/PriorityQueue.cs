@@ -22,16 +22,22 @@
             throw new InvalidOperationException("The queue is empty.");
         }
 
-        // Find the index of the item with the highest priority to remove
+        // Fix 1: Initialize index correctly
         var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
+
+        // Fix 2: Changed condition to index < _queue.Count to check the whole list
+        for (int index = 1; index < _queue.Count; index++)
         {
-            if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
+            // Fix 3: Changed >= to > to ensure we keep the FIRST item encountered 
+            // at that priority level (maintaining FIFO for ties).
+            if (_queue[index].Priority > _queue[highPriorityIndex].Priority)
                 highPriorityIndex = index;
         }
 
-        // Remove and return the item with the highest priority
         var value = _queue[highPriorityIndex].Value;
+
+        // Fix 4: Actually remove the item from the internal list
+        _queue.RemoveAt(highPriorityIndex);
         return value;
     }
 
